@@ -10,17 +10,17 @@
 # 工具、方法與原因
 ## 原因:
  一開始直覺想使用basket analysis，但題目的主題為rule-based，所以盡可能的dig into data，從中找到一些rule，觀察且考慮的有以下
-i. 以下參數結合為一個product_score，做為評估是否為使用者browse以後容易下單的商品或是對公司的營收有助益  
-    a. 商品在網頁上的資訊是否夠明確，有的話會增加購物者下單意願，例如是否有圖片或是敘述等  
+1. 以下參數結合為一個product_score，做為評估是否為使用者browse以後容易下單的商品或是對公司的營收有助益  
+* 商品在網頁上的資訊是否夠明確，有的話會增加購物者下單意願，例如是否有圖片或是敘述等  
          (title, feature, description. image, imageHighRes, tech1以上有資訊則+1，無則為0)  
-    b. 如果商品得到製造商的discount，也視為對增加客單價的正向指標 (discountbyManufacturer有責+1)  
-    c.  若商品附帶battery，則為1，無則0  
-    d.  從rank拿到商品在分類中的排名，取log後作為分數使用  
-ii. 品牌忠誠度: 評估玩家對品牌的忠誠度  
+* 如果商品得到製造商的discount，也視為對增加客單價的正向指標 (discountbyManufacturer有責+1)  
+* 若商品附帶battery，則為1，無則0  
+* 從rank拿到商品在分類中的排名，取log後作為分數使用  
+2. 品牌忠誠度: 評估玩家對品牌的忠誠度  
 avg(count of purchase history per brand per user) per product  
-iii. 使用者評價: overall  
+3. 使用者評價: overall  
 avg(overall) per product  
-iv.  product_popularity 可藉由商品熱銷度反推長尾商品  
+4.  product_popularity 可藉由商品熱銷度反推長尾商品  
 count of purchase history per product  
 
 ## 方法步驟:
