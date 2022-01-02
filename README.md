@@ -1,4 +1,4 @@
-# 專案的目的和結果(推薦分數) 
+# 專案的目的和結果(Content-Based) 
 ## 目的: 
 使用content-based建立推薦系統，使用structured和unstructured data
 ## 結果: 
