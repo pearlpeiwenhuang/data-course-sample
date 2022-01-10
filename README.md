@@ -1,4 +1,4 @@
-# 專案的目的和結果(Content-Based) 
+# 專案的目的和結果(Collaborative Filtering) 
 ## 目的: 
 分別使用cf-user, cf-item and cf-surprise建立推薦系統，了解資料轉置以及計算使用者與商品距離和使用surprise套件
 ## 結果: 
