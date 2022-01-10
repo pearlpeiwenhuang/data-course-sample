@@ -1,32 +1,29 @@
 # 專案的目的和結果(Content-Based) 
 ## 目的: 
-使用content-based建立推薦系統，使用structured和unstructured data
+分別使用cf-user, cf-item and cf-surprise建立推薦系統，了解資料轉置以及計算使用者與商品距離和使用surprise套件
 ## 結果: 
-* 與之前的rule-based比較數據增加10倍，但主要是因為之前rule建立的邏輯不完善
-* 由於2018-09-01過後大多為新客戶，故需要加上rule-based提供推薦商品
-* rule-based改為使用最熱門的商品即可大程度改善推薦分數
+* cf與之前的rule-based比較效果較差，主要還是得使用rule-based彌補cf
+* 發現在surprise的training data時間控制是有影響的，過往rule-based發現商品的季節性多使用過去三個月資料，但cf-surprise的訓練資料在一年看起來結果最好
+* rule-based使用最熱門的商品可大程度改善推薦分數
 
-| random-based  | rule-based | content-based + rule-based_new |
-| ------------- | ------------- | ------------- |
-| 0.003389830508474576  | 0.013559322033898305  | 0.13389830508474576  |
+| random-based  | rule-based | cf-user | cf-item | cf-surprise |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| 0.003389830508474576  | 0.013559322033898305  | 0.00  | 0.00  | 0.001694915254237288  |
 
 # 工具、方法與原因
 ## 原因:
-### Content-Based可以使用的variables分為structured和unstructured兩種:
-* unstructured: title, description, feature
-- 處理unstructured data的方法包含以下: 去除特殊字元、去除stopwords以及小寫
-- EDA:分別觀察Token Frequency Distribution、Bigrams Frequency Distribution和Trigrams Frequency Distribution在移除stopwords的分布，其實資料中還是有不少的無意義的字眼，像是br br
-- 原本想使用nltk.corpus import words解決無意義字眼問題，但evaluate結果較差
-* structured: price, rank, brand, subcategory(extract from rank)
-- 因時間不足以建立adjusted cosine similarity，暫時先將brand和subcategory作為unstructured的text一部分處理
-### EDA資料觀察還包含以下
-* testing data中的新客佔大多數，故加上rule-based彌補content-based無法提供推薦產品的部分
-* Mimi的產品大多為美妝商品，且有季節流行性，故只抓取過去三個月資料作為訓練資料
-* unstructured的feature資料不多，則不予考慮
+### cf-user, cf-item, cf-surprise可以使用的variables主要為ratings
+* ratings: reviewerID, asin, overall
+* 在這次實作中只盡量讀懂資料轉置和整體流程，如果有時間會針對時間和overall做一些EDA以及k值的實驗
 
 ## 方法步驟:
-1. 將代表unstructured data的title, description以及structured data的brand, subcategory合成為一個新欄位unstructured
-2. 對新的text欄位做去除特殊字元、去除stopwords以及小寫處理
-3. TfidfVectorizer轉化為矩陣
-4. 使用cosine_similarity計算商品之間feature的距離並排序
-5. 若為新user或是過去三個月沒有消費的user，怎使用rule-based產生最暢銷商品，若為舊的user，則使用以上的content-based
+### cf-user, cf-item
+1. 按照課程流程將資料過濾並轉置
+2. 使用轉置矩陣展開計算相似度
+3. 計算 user similarity matrix
+### cf-surprise
+1. 留下最新評分的資料，將重複的過濾
+2. 將資料轉成user / itme / rating 的順序
+3. 設定KNN的套件，有做以下兩個嘗試
+* 使用3個月的資料和1年的資料分別做實驗，1的的資料效果較好，3個月則趨近於0
+* 調整min-k的數值，看起來該數值變化對結果影響不明顯
